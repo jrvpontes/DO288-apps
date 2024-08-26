@@ -1,6 +1,3 @@
-#bin/bash
-#oc -n save-dev delete build --all
-#oc -n save-dev start-build save-m-builder
 BASEDIR=$(dirname "$0")
 now=$(date +"%T")
 echo "Base dir : $BASEDIR" 
