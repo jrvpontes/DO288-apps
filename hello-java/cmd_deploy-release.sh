@@ -1,7 +1,7 @@
 BASEDIR=$(dirname "$0")
 now=$(date +"%T")
 echo "Base dir : $BASEDIR" 
-echo "Current time Master : $now" >> "$BASEDIR/app-src/src/main/java/master.txt"
+echo "Current time Master : $now" >> "$BASEDIR/app-src/src/main/resources/master.txt"
 
 mvn clean install -f app-src/
 mkdir -p ../releases/download/OCP-4.1-1/
