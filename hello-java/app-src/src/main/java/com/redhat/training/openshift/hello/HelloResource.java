@@ -1,7 +1,9 @@
 package com.redhat.training.openshift.hello;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -19,13 +21,28 @@ public class HelloResource {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
 		String message = System.getenv().getOrDefault("APP_MSG", null);
 		String response = "";
+		String history = "";
+
+    try{
+      InputStream url = getClass().getResourceAsStream("/master.txt");
+      BufferedReader reader = new BufferedReader(new InputStreamReader(url));
+      String line = reader.readLine();
+      while(line != null) {
+    	  System.out.println(line);
+    	  history = history + line +  "\n";    	  
+    	  line = reader.readLine();
+      }
+    }catch(Exception e){
+      e.printStackTrace();
+      history = e.getMessage();
+    }
 
 		if (message == null)
 			response = "Hello world from host " + hostname + "\n";
 		else
 			response = "Hello world from host [" + hostname + "]. Message received = " + message + "\n";
 
-		return response;
+		return response + "\n" + history;
 	}
 
 	@SuppressWarnings("rawtypes")
