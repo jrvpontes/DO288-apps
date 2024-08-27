@@ -6,3 +6,5 @@ git add --force ../releases/download/OCP-4.1-1/hello-java.jar
 git -C $BASEDIR add .
 git -C $BASEDIR commit -m "Ajuste: $now"
 git -C $BASEDIR push
+
+#sh /wks/aux/pipe/run.sh

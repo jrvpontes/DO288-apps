@@ -18,7 +18,7 @@ ADD   https://github.com/jrvpontes/DO288-apps/raw/main/releases/download/OCP-4.1
 COPY  run-app.sh /opt/app-root/bin/
 
 RUN   chown -R wildfly:wildfly /opt/app-root && \
-      chmod -R 700 /opt/app-root
+      chmod -R 777 /opt/app-root
 
 EXPOSE 8080
 
