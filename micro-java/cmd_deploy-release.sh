@@ -5,5 +5,5 @@ echo "Current time Master : $now" >> "$BASEDIR/app-source/src/main/resources/mas
 
 mvn clean install -DskipTests -f app-source
 mkdir -p ../releases/download/OCP-4.1-1/
-cp -v target/micro-java-1.0-runner.jar ../releases/download/OCP-4.1-1/micro-java.jar
+cp -v app-source/target/micro-java-1.0-runner.jar ../releases/download/OCP-4.1-1/micro-java.jar
 #podman build -t teste -f Containerfile
