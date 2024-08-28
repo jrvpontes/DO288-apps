@@ -1,71 +1,83 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: clone-read
+  name: hello-build
 spec:
-  description: | 
-    This pipeline clones a git repo, then echoes the README file to the stdout.
   params:
-  - name: git-repo-url
-    type: string
-    description: The git repo URL to clone from.  
-  - name: git-subdirectory
-    type: string
-    description: The 'workspace-source' git-clone directory target.
-  - name: buildah-image
-    type: string
-  - name: buildah-Containerfile
-    type: string
-  - name: buildah-contextDir
-    type: string
-  - name: tag-src
-    type: string
-  - name: tag-dst
-    type: string
+    - name: username
+      type: string
+    - name: checkout-url
+      type: string
+    - name: checkout-revision
+      type: string    
+    - name: deploy-dst
+      type: string    
+    - name: deploy-ctx
+      type: string          
+    - name: deploy-containerFile
+      type: string          
+    - name: tag-src
+      type: string    
+    - name: tag-dst
+      type: string    
   workspaces:
-  - name: shared-data
-    description: | 
-      This workspace contains the cloned repo files, so they can be read by the
-      next task.
+    - name: shared-data
+      description: volume compartilhado.        
   tasks:
-  - name: fetch-source
-    taskRef:
-      name: git-clone
-      kind: ClusterTask
-    workspaces:
-    - name: output
-      workspace: shared-data
-    params:
-    - name: url
-      value: $(params.git-repo-url)
-    - name: subdirectory
-      value: $(params.git-subdirectory)
-  - name: build-image
-    taskRef:
-      name: buildah
-      kind: ClusterTask
-    runAfter: 
-      - fetch-source
-    workspaces:
-    - name: source
-      workspace: shared-data
-    params: 
+    - name: print
+      taskRef:
+        name: echo
+      params:
+      - name: mensagem
+        value: |
+          params.username: $(params.username)
+          params.checkout-url: $(params.checkout-url)
+          params.checkout-revision: $(params.checkout-revision)
+          params.deploy-ctx: $(params.deploy-ctx)
+          params.deploy-dst: $(params.deploy-dst)
+          params.deploy-containerFile: $(params.deploy-containerFile)          
+          params.tag-src: $(params.tag-src)
+          params.tag-dst: $(params.tag-dst)
+    - name: checkout
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+      - name: output
+        workspace: shared-data
+      runAfter:
+        - print
+      params:
+      - name: url
+        value: $(params.checkout-url)
+      - name: revision
+        value: $(params.checkout-revision)
+    - name: build
+      runAfter:
+        - checkout
+      taskRef:
+        kind: ClusterTask
+        name: buildah
+      workspaces:
+      - name: source
+        workspace: shared-data
+      params:
       - name: IMAGE
-        value: $(params.buildah-image)
-      - name: DOCKERFILE
-        value: $(params.buildah-Containerfile)
+        value: $(params.deploy-dst)
       - name: CONTEXT
-        value: $(params.buildah-contextDir)
-  - name: tag-latest
-    taskRef: 
-      name: skopeo-copy
-      kind: ClusterTask
-    runAfter: 
-      - build-image
-    workspaces:
-    - name: images-url
-      workspace: shared-data
-    params:
+        value: $(params.deploy-ctx)
+      - name: DOCKERFILE
+        value: $(params.deploy-containerFile)          
+    - name: tag
+      runAfter:
+        - build
+      taskRef:
+        kind: ClusterTask
+        name: skopeo-copy
+      workspaces:
+      - name: images-url
+        workspace: shared-data
+      params:
       - name: srcImageURL
         value: $(params.tag-src)
       - name: destImageURL

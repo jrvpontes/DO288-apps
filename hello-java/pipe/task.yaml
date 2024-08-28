@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: echo
+spec:
+  params:
+  - name: mensagem
+    type: string
+  steps:
+    - name: echo
+      image: ubuntu
+      script: |
+        #!/bin/bash
+        echo "Executando $(params.mensagem)!"   

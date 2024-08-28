@@ -1,0 +1,72 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: hello-template
+spec:
+  params:
+    - name: username
+      default: "Kubernetes"
+    - name: checkout-url
+      default: "git-repo-url"
+    - name: checkout-revision
+      default: "git-lastcommit-id"
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: hello-build-run-
+    spec:
+      pipelineRef:
+        name: hello-build
+      params:
+        - name: username
+          value: $(tt.params.username)
+        - name: checkout-url
+          value: $(tt.params.checkout-url)
+        - name: checkout-revision
+          value: $(tt.params.checkout-revision)
+        - name: deploy-dst
+          value: image-registry.openshift-image-registry.svc:5000/rhc-wks/hello:$(tt.params.checkout-revision)
+        - name: deploy-ctx
+          value: hello-java/docker
+        - name: deploy-containerFile
+          value: Containerfile
+        - name: tag-src
+          value: docker://image-registry.openshift-image-registry.svc:5000/rhc-wks/hello:$(tt.params.checkout-revision)
+        - name: tag-dst
+          value: docker://image-registry.openshift-image-registry.svc:5000/rhc-wks/hello:latest
+      workspaces:
+        - name: shared-data
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+              - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 1Gi        
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: hello-binding
+spec: 
+  params:
+    - name: username
+      value: $(body.head_commit.committer.username)
+    - name: checkout-url
+      value: $(body.repository.url)
+    - name: checkout-revision
+      value: $(body.head_commit.id)
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: hello-listener
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - name: hello-trigger 
+      bindings:
+      - ref: hello-binding
+      template:
+        ref: hello-template

@@ -1,31 +1,10 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  #generateName: clone-read-run-
-  name: clone-read-run-xxx
+  name: hello-build-run  
 spec:
   pipelineRef:
-    name: clone-read
-  workspaces:
-  - name: shared-data
-    volumeClaimTemplate:
-      spec:
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
+    name: hello-build
   params:
-  - name: git-repo-url
-    value: https://github.com/jrvpontes/DO288-apps/
-  - name: git-subdirectory
-    value: . 
-  - name: buildah-Containerfile
-    value: Containerfile
-  - name: buildah-contextDir
-    value: hello-java/docker
-    
-
-
-
-
+  - name: username
+    value: "jpontes"
