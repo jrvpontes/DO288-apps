@@ -1,0 +1,82 @@
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  annotations:
+    triggers.tekton.dev/old-escape-quotes: 'true'
+  name: hello-template
+  namespace: rhc-wks
+spec:
+  params:
+    - name: payload
+    - name: git_branch_name
+    - name: git_repository_name
+    - name: git_hash_commit
+    - name: git_url
+    - name: git_author
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1
+      kind: PipelineRun
+      metadata:
+        generateName: hello-build-
+        #name: xxxxxxxx
+      spec:
+        params:
+          - name: PAYLOAD
+            value: ''
+          - name: git-repo-url
+            value: $(tt.params.git_url)
+          - name: git-subdirectory
+            value: .
+          - name: git-source-branch
+            value: $(tt.params.git_branch_name)
+          - name: context-dir
+            value: .
+          - name: buildah-image
+            value: 'image-registry.openshift-image-registry.svc:5000/rhc-wks/hello:$(tt.params.git_hash_commit)'
+          - name: buildah-contextDir
+            value: hello-java/docker
+          - name: buildah-Containerfile
+            value: ./Containerfile
+
+          - name: output-image-latest
+            value: 'docker://image-registry.openshift-image-registry.svc:5000/rhc-wks/hello:latest'
+          - name: output-image-push-src
+            value: 'docker://image-registry.openshift-image-registry.svc:5000/rhc-wks/hello:$(tt.params.git_hash_commit)'
+        pipelineRef:
+          name: clone-read
+        workspaces:
+          - name: shared-data
+            volumeClaimTemplate:
+              spec:
+                accessModes: 
+                - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 2Gi
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: hello-binding
+spec:
+  params:
+    - name: git_hash_commit
+      value: $(body.head_commit.id)
+    - name: git_url
+      value: $(body.repository.url)
+    - name: git_branch_name
+      value: main
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: hello-listener
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - name: hello-trigger 
+      bindings:
+      - ref: hello-binding
+      template:
+        ref: hello-template

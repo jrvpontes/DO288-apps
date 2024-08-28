@@ -8,3 +8,4 @@ git -C $BASEDIR commit -m "Ajuste: $now"
 git -C $BASEDIR push
 
 #sh /wks/aux/pipe/run.sh
+#ln /wks/aux/DO288-apps/hello-java/pipe /wks/aux
