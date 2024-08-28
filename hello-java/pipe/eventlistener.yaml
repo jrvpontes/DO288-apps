@@ -34,9 +34,9 @@ spec:
           - name: buildah-Containerfile
             value: ./Containerfile
           - name: tag-src
-            value: 'docker://image-registry.openshift-image-registry.svc:5000/rhc-wks/hello:latest'
-          - name: tag-dst
             value: 'docker://image-registry.openshift-image-registry.svc:5000/rhc-wks/hello:$(tt.params.git_hash_commit)'
+          - name: tag-dst
+            value: 'docker://image-registry.openshift-image-registry.svc:5000/rhc-wks/hello:latest'
         pipelineRef:
           name: clone-read
         workspaces:
