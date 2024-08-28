@@ -62,6 +62,9 @@ spec:
       kind: ClusterTask
     runAfter: 
       - build-image
+    workspaces:
+    - name: images-url
+      workspace: shared-data
     params:
       - name: srcImageURL
         value: $(params.tag-src)
