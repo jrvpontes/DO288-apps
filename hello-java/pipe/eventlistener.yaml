@@ -8,12 +8,9 @@ metadata:
   namespace: rhc-wks
 spec:
   params:
-    - name: payload
     - name: git_branch_name
-    - name: git_repository_name
     - name: git_hash_commit
     - name: git_url
-    - name: git_author
   resourcetemplates:
     - apiVersion: tekton.dev/v1
       kind: PipelineRun
@@ -22,8 +19,6 @@ spec:
         #name: xxxxxxxx
       spec:
         params:
-          - name: PAYLOAD
-            value: ''
           - name: git-repo-url
             value: $(tt.params.git_url)
           - name: git-subdirectory
@@ -38,7 +33,6 @@ spec:
             value: hello-java/docker
           - name: buildah-Containerfile
             value: ./Containerfile
-
           - name: output-image-latest
             value: 'docker://image-registry.openshift-image-registry.svc:5000/rhc-wks/hello:latest'
           - name: output-image-push-src
