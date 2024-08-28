@@ -33,9 +33,9 @@ spec:
             value: hello-java/docker
           - name: buildah-Containerfile
             value: ./Containerfile
-          - name: output-image-latest
+          - name: tag-src
             value: 'docker://image-registry.openshift-image-registry.svc:5000/rhc-wks/hello:latest'
-          - name: output-image-push-src
+          - name: tag-dst
             value: 'docker://image-registry.openshift-image-registry.svc:5000/rhc-wks/hello:$(tt.params.git_hash_commit)'
         pipelineRef:
           name: clone-read

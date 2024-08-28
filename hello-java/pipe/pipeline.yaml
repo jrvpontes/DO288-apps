@@ -18,6 +18,10 @@ spec:
     type: string
   - name: buildah-contextDir
     type: string
+  - name: tag-src
+    type: string
+  - name: tag-dst
+    type: string
   workspaces:
   - name: shared-data
     description: | 
@@ -52,3 +56,14 @@ spec:
         value: $(params.buildah-Containerfile)
       - name: CONTEXT
         value: $(params.buildah-contextDir)
+  - name: tag-latest
+    taskRef: 
+      name: skopeo-copy
+      kind: ClusterTask
+    runAfter: 
+      - build-image
+    params:
+      - name: srcImageURL
+        value: $(params.tag-src)
+      - name: destImageURL
+        value: $(params.tag-dst)
