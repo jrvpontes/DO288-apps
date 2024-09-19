@@ -1,1 +1,2 @@
 apenas a v2 deu certo.
+o v3 é para teste no cluster-rpds e no cluster-lab
