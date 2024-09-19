@@ -8,3 +8,5 @@ FROM image-registry.openshift-image-registry.svc:5000/rhc-wks/jpontes-java:lates
 
 # oc create imagestream ex288-q2 
 # oc delete build --all && oc start-build buildconfig/ex288-q2
+
+#https://github.com/jrvpontes/DO288-apps.git - /teste_02/v3/Dockerfile
