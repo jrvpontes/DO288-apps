@@ -3,16 +3,14 @@ commands:
 - apply:
     component: build
   id: build-image
-- apply:
-    component: deploy
-    group:
-      isDefault: true
-      kind: deploy
-  id: deployk8s
 
 components:
 
 - image:
+    dockerfile:
+      buildContext: .
+      rootRequired: false
+      uri: docker/Dockerfile
     imageName: registry.ocp4.example.com:8443/redhattraining/openshift-dev-deploy-cli-weather:1.0
   name: build
 
@@ -50,4 +48,5 @@ metadata:
   version: 3.0.0
 schemaVersion: 2.2.0
 
+#oc new-app --code=https://github.com/jrvpontes/DO288-apps.git --context-dir=/teste_03/v2
 #https://github.com/jrvpontes/DO288-apps.git - /teste_03/v2
