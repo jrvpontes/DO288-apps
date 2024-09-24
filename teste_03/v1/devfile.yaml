@@ -10,7 +10,7 @@ components:
 commands:
   - id: install
     exec:
-      commandLine: npm install
+      commandLine: npm install -g npm@10.8.3 
       component: runtime
       workingDir: ${PROJECT_SOURCE}      
       group:
