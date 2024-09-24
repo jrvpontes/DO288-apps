@@ -6,6 +6,14 @@ components:
       endpoints:
         - name: http-3000
           targetPort: 3000
+  - name: jpontes
+    image:
+      imageName: node:18-alpine
+      autoBuild: true
+      dockerfile:
+        uri: Dockerfile
+        buildContext: .
+        rootRequired: false
 
 commands:
   - id: install
