@@ -7,10 +7,6 @@ commands:
 components:
 
 - image:
-    dockerfile:
-      buildContext: .
-      rootRequired: false
-      uri: docker/Dockerfile
     imageName: registry.ocp4.example.com:8443/redhattraining/openshift-dev-deploy-cli-weather:1.0
   name: build
 
