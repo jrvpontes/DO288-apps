@@ -3,6 +3,12 @@ commands:
 - apply:
     component: build
   id: build-image
+- apply:
+    component: deploy
+    group:
+      isDefault: true
+      kind: deploy
+  id: deployk8s
 
 components:
 
