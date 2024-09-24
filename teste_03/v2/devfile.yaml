@@ -10,7 +10,7 @@ components:
     dockerfile:
       buildContext: .
       rootRequired: false
-#      uri: docker/Dockerfile
+      uri: docker/Dockerfile
     imageName: registry.ocp4.example.com:8443/redhattraining/openshift-dev-deploy-cli-weather:1.0
   name: build
 
@@ -18,7 +18,7 @@ components:
     endpoints:
     - name: http-8081
       targetPort: 8081
-#    uri: kubernetes/deploy.yaml
+    uri: kubernetes/deploy.yaml
   name: deploy
 
 - container:
